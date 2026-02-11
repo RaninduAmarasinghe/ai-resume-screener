@@ -1,5 +1,6 @@
 package com.example.AI_Powered.Resume.Screener.controller;
 
+import com.example.AI_Powered.Resume.Screener.service.PdfParserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,6 +9,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("api/resume")
 public class ResumeController {
 
+    private final PdfParserService pdfParserService;
+
+    public ResumeController(PdfParserService pdfParserService) {
+        this.pdfParserService = pdfParserService;
+    }
     @PostMapping("/parse")
     public ResponseEntity<?> parseResume(@RequestPart("resume") MultipartFile resumePdf){
         if(resumePdf.isEmpty()){
