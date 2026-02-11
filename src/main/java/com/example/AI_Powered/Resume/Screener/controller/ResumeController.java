@@ -14,16 +14,30 @@ public class ResumeController {
     public ResumeController(PdfParserService pdfParserService) {
         this.pdfParserService = pdfParserService;
     }
-    @PostMapping("/parse")
-    public ResponseEntity<?> parseResume(@RequestPart("resume") MultipartFile resumePdf){
+
+    @PostMapping("/analyze")
+    public ResponseEntity<?> analyzeResume(@RequestPart("resume") MultipartFile resumePdf,
+                                           @RequestPart("jobDescription")String jobDescription )
+    {
         if(resumePdf.isEmpty()){
             return ResponseEntity.badRequest().body("resume file is required");
         }
-        try{
-            String extractedText = pdfParserService.extractText(resumePdf);
-            return ResponseEntity.ok(extractedText);
+        if(jobDescription == null || jobDescription.isBlank()){
+            return ResponseEntity.badRequest().body("job description is required");
+        }
+        try {
+            String resumeText = pdfParserService.extractText(resumePdf);
+
+            return  ResponseEntity.ok(
+                    new ResumeAnalysisResponse(
+                            resumeText.length(),
+                            jobDescription.length(),
+                            "Resume and Job Description received successfully"
+                    )
+            );
+
         } catch (Exception e){
-            return ResponseEntity.internalServerError().body("Failed to parse resume" + e.getMessage());
+            return ResponseEntity.internalServerError().body("Failed to analyze resume" + e.getMessage());
         }
     }
 }
