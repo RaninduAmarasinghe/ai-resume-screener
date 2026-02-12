@@ -1,5 +1,6 @@
 package com.example.AI_Powered.Resume.Screener.controller;
 
+import com.example.AI_Powered.Resume.Screener.dto.ResumeAnalysisResponse;
 import com.example.AI_Powered.Resume.Screener.service.PdfParserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class ResumeController {
 
     @PostMapping("/analyze")
     public ResponseEntity<?> analyzeResume(@RequestPart("resume") MultipartFile resumePdf,
-                                           @RequestPart("jobDescription")String jobDescription )
+                                           @RequestParam("jobDescription")String jobDescription )
     {
         if(resumePdf.isEmpty()){
             return ResponseEntity.badRequest().body("resume file is required");
